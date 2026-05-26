@@ -9,33 +9,40 @@ services:
     volumes:
       - .:/var/www/html
     environment:
-      - DB_HOST=mysql
+      - DB_TYPE=pgsql
+      - DB_HOST=postgres
+      - DB_PORT=5432
       - DB_USER=msdv_user
       - DB_PASS=msdv_password
       - DB_NAME=mcc_discipline_system
     depends_on:
-      - mysql
+      - postgres
     networks:
       - msdv_network
 
-  mysql:
-    image: mysql:8.0
-    container_name: msdv_mysql
+  postgres:
+    image: postgres:15-alpine
+    container_name: msdv_postgres
     environment:
-      - MYSQL_ROOT_PASSWORD=root_password
-      - MYSQL_USER=msdv_user
-      - MYSQL_PASSWORD=msdv_password
-      - MYSQL_DATABASE=mcc_discipline_system
+      - POSTGRES_USER=msdv_user
+      - POSTGRES_PASSWORD=msdv_password
+      - POSTGRES_DB=mcc_discipline_system
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/mcc_discipline_system.sql:/docker-entrypoint-initdb.d/01-init.sql
     networks:
       - msdv_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U msdv_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 networks:
   msdv_network:
     driver: bridge
 
 volumes:
-  mysql_data:
+  postgres_data:
