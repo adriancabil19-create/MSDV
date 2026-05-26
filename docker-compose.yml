@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: msdv_app
+    ports:
+      - "80:80"
+    volumes:
+      - .:/var/www/html
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=msdv_user
+      - DB_PASS=msdv_password
+      - DB_NAME=mcc_discipline_system
+    depends_on:
+      - mysql
+    networks:
+      - msdv_network
+
+  mysql:
+    image: mysql:8.0
+    container_name: msdv_mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_USER=msdv_user
+      - MYSQL_PASSWORD=msdv_password
+      - MYSQL_DATABASE=mcc_discipline_system
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - msdv_network
+
+networks:
+  msdv_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
