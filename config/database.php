@@ -9,6 +9,7 @@ $user = getenv('DB_USER') ?: "root";
 $pass = getenv('DB_PASS') ?: "";
 $db_name = getenv('DB_NAME') ?: "mcc_discipline_system";
 $port = getenv('DB_PORT') ?: ($db_type === 'pgsql' ? 5432 : 3306);
+$sslmode = getenv('DB_SSLMODE') ?: '';
 
 // MySQL Connection (default)
 if ($db_type === 'mysql') {
@@ -24,6 +25,9 @@ if ($db_type === 'mysql') {
 // PostgreSQL Connection
 elseif ($db_type === 'pgsql') {
     $connection_string = "host=$host port=$port dbname=$db_name user=$user password=$pass";
+    if (!empty($sslmode)) {
+        $connection_string .= " sslmode=$sslmode";
+    }
     $conn = pg_connect($connection_string);
     
     if (!$conn) {
