@@ -24,11 +24,20 @@ if ($db_type === 'mysql') {
 }
 // PostgreSQL Connection
 elseif ($db_type === 'pgsql') {
-    // Resolve an IPv4 address for the host to avoid IPv6 "Network is unreachable" errors
-    $resolved_ip = gethostbyname($host);
+    // Prefer explicit IPv4 A-record lookup to avoid IPv6 "Network is unreachable" errors
+    $resolved_ip = null;
+    $ipv4_list = @gethostbynamel($host);
+    if ($ipv4_list !== false && count($ipv4_list) > 0) {
+        $resolved_ip = $ipv4_list[0];
+    } else {
+        $a_records = @dns_get_record($host, DNS_A);
+        if ($a_records !== false && count($a_records) > 0 && !empty($a_records[0]['ip'])) {
+            $resolved_ip = $a_records[0]['ip'];
+        }
+    }
 
     $connection_string = "host=$host port=$port dbname=$db_name user=$user password=$pass";
-    if ($resolved_ip !== $host && filter_var($resolved_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+    if (!empty($resolved_ip) && filter_var($resolved_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
         $connection_string .= " hostaddr=$resolved_ip";
     }
     if (!empty($sslmode)) {
