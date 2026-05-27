@@ -4,7 +4,7 @@
 // Supports both MySQL and PostgreSQL
 
 $db_type = getenv('DB_TYPE') ?: 'mysql';
-$host = getenv('DB_HOST') ?: "localhost";
+$host = getenv('DB_HOST') ?: getenv('DB_HOST_EXTERNAL') ?: "localhost";
 $user = getenv('DB_USER') ?: "root";
 $pass = getenv('DB_PASS') ?: "";
 $db_name = getenv('DB_NAME') ?: "mcc_discipline_system";
