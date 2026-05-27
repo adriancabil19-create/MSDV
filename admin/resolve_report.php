@@ -10,7 +10,7 @@ if(isset($_GET['id'])){
               SET status='Resolved'
               WHERE id='$id'";
 
-    mysqli_query($conn, $query);
+    db_query( $query);
 
     header("Location: reports.php");
     exit();

@@ -15,10 +15,10 @@ if ($_SESSION['role'] != 'admin') {
 }
 
 $query = "SELECT * FROM students ORDER BY id DESC";
-$result = mysqli_query($conn, $query);
+$result = db_query( $query);
 
 $students = [];
-while($row = mysqli_fetch_assoc($result)) {
+while($row = db_fetch_assoc($result)) {
     $students[] = $row;
 }
 
@@ -575,10 +575,10 @@ html, body { height: 100%; font-family: var(--font); font-size: 14px; color: var
                                 <td>
                                 <?php
                                 $sid_r = $row['student_id'];
-                                $minor_q = mysqli_query($conn, "SELECT COUNT(*) AS total FROM violations WHERE student_id='$sid_r' AND violation_category='Minor'");
-                                $minor_c = mysqli_fetch_assoc($minor_q)['total'];
-                                $major_q = mysqli_query($conn, "SELECT COUNT(*) AS total FROM violations WHERE student_id='$sid_r' AND violation_category='Major'");
-                                $major_c = mysqli_fetch_assoc($major_q)['total'];
+                                $minor_q = db_query( "SELECT COUNT(*) AS total FROM violations WHERE student_id='$sid_r' AND violation_category='Minor'");
+                                $minor_c = db_fetch_assoc($minor_q)['total'];
+                                $major_q = db_query( "SELECT COUNT(*) AS total FROM violations WHERE student_id='$sid_r' AND violation_category='Major'");
+                                $major_c = db_fetch_assoc($major_q)['total'];
                                 $score = ($minor_c * 1) + ($major_c * 3);
                                 if ($score <= 2)     echo '<span class="risk-badge risk-low"><i class="fas fa-circle" style="font-size:7px;"></i>Low Risk</span>';
                                 elseif ($score <= 5) echo '<span class="risk-badge risk-medium"><i class="fas fa-circle" style="font-size:7px;"></i>Medium Risk</span>';
@@ -614,8 +614,8 @@ html, body { height: 100%; font-family: var(--font); font-size: 14px; color: var
                 AND v2.id <= violations.id) AS offense_count
                 FROM violations WHERE student_id = '$sid'
                 ORDER BY created_at DESC";
-    $vresult = mysqli_query($conn, $vquery);
-    $vcount  = mysqli_num_rows($vresult);
+    $vresult = db_query( $vquery);
+    $vcount  = db_num_rows($vresult);
 ?>
 
 <!-- VIEW MODAL -->
@@ -662,7 +662,7 @@ html, body { height: 100%; font-family: var(--font); font-size: 14px; color: var
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <?php $count = 1; while ($v = mysqli_fetch_assoc($vresult)):
+                                <?php $count = 1; while ($v = db_fetch_assoc($vresult)):
                                     $cbadge = 'status-default';
                                     if ($v['case_status'] == 'Pending')  $cbadge = 'status-pending';
                                     if ($v['case_status'] == 'Closed')   $cbadge = 'status-closed';

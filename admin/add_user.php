@@ -6,19 +6,19 @@ include("../config/database.php");
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    $fullname = mysqli_real_escape_string($conn, $_POST['fullname']);
-    $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $email = mysqli_real_escape_string($conn, $_POST['email']);
-    $role = mysqli_real_escape_string($conn, $_POST['role']);
+    $fullname = db_escape( $_POST['fullname']);
+    $username = db_escape( $_POST['username']);
+    $email = db_escape( $_POST['email']);
+    $role = db_escape( $_POST['role']);
 
     // HASH PASSWORD
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
     // CHECK EMAIL
     $checkEmail = "SELECT * FROM users WHERE email='$email'";
-    $emailResult = mysqli_query($conn, $checkEmail);
+    $emailResult = db_query( $checkEmail);
 
-    if(mysqli_num_rows($emailResult) > 0){
+    if(db_num_rows($emailResult) > 0){
 
         echo "
         <script>
@@ -32,9 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // CHECK USERNAME
     $checkUsername = "SELECT * FROM users WHERE username='$username'";
-    $usernameResult = mysqli_query($conn, $checkUsername);
+    $usernameResult = db_query( $checkUsername);
 
-    if(mysqli_num_rows($usernameResult) > 0){
+    if(db_num_rows($usernameResult) > 0){
 
         echo "
         <script>
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $query = "INSERT INTO users(fullname, username, email, password, role)
               VALUES('$fullname','$username','$email','$password','$role')";
 
-    mysqli_query($conn, $query);
+    db_query( $query);
 
     echo "
     <script>

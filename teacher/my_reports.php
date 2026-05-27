@@ -20,7 +20,7 @@ $query = "SELECT * FROM violations
           WHERE reported_by='$fullname'
           ORDER BY id DESC";
 
-$result = mysqli_query($conn, $query);
+$result = db_query( $query);
 
 ?>
 
@@ -567,7 +567,7 @@ $result = mysqli_query($conn, $query);
 
             <?php
             $has_rows = false;
-            while($row = mysqli_fetch_assoc($result)):
+            while($row = db_fetch_assoc($result)):
                 $has_rows = true;
             ?>
 

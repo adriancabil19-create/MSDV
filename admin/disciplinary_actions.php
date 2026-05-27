@@ -47,7 +47,7 @@ ORDER BY id DESC
 
 ";
 
-$result = mysqli_query($conn, $query);
+$result = db_query( $query);
 
 ?>
 
@@ -244,7 +244,7 @@ body{
 
                             <tbody>
 
-                            <?php while($row = mysqli_fetch_assoc($result)) { ?>
+                            <?php while($row = db_fetch_assoc($result)) { ?>
 
                                 <tr class="action-row">
 

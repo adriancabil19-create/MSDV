@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
               SET password='$password'
               WHERE id='$id'";
 
-    mysqli_query($conn, $query);
+    db_query( $query);
 
     header("Location: users.php");
     exit();

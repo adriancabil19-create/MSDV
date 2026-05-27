@@ -19,20 +19,20 @@ if ($_SESSION['role'] != 'admin') {
 }
 
 /* TOTAL STUDENTS */
-$totalStudentsQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM students");
-$totalStudents = mysqli_fetch_assoc($totalStudentsQuery)['total'];
+$totalStudentsQuery = db_query( "SELECT COUNT(*) AS total FROM students");
+$totalStudents = db_fetch_assoc($totalStudentsQuery)['total'];
 
 /* TOTAL VIOLATIONS */
-$totalViolationsQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM violations");
-$totalViolations = mysqli_fetch_assoc($totalViolationsQuery)['total'];
+$totalViolationsQuery = db_query( "SELECT COUNT(*) AS total FROM violations");
+$totalViolations = db_fetch_assoc($totalViolationsQuery)['total'];
 
 /* PENDING SANCTIONS */
-$pendingQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM violations WHERE case_status='Pending'");
-$pendingSanctions = mysqli_fetch_assoc($pendingQuery)['total'];
+$pendingQuery = db_query( "SELECT COUNT(*) AS total FROM violations WHERE case_status='Pending'");
+$pendingSanctions = db_fetch_assoc($pendingQuery)['total'];
 
 /* COMPLETED SANCTIONS */
-$completedQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM violations WHERE case_status='Completed'");
-$completedSanctions = mysqli_fetch_assoc($completedQuery)['total'];
+$completedQuery = db_query( "SELECT COUNT(*) AS total FROM violations WHERE case_status='Completed'");
+$completedSanctions = db_fetch_assoc($completedQuery)['total'];
 
 ?>
 <!DOCTYPE html>

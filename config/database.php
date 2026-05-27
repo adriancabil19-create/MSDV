@@ -65,4 +65,63 @@ else {
     die("Unsupported database type: $db_type");
 }
 
+function db_escape($value) {
+    global $conn, $db_type;
+    if ($value === null) {
+        return '';
+    }
+    if ($db_type === 'pgsql') {
+        return pg_escape_string($conn, $value);
+    }
+    return mysqli_real_escape_string($conn, $value);
+}
+
+function db_query($query) {
+    global $conn, $db_type;
+    if ($db_type === 'pgsql') {
+        return pg_query($conn, $query);
+    }
+    return mysqli_query($conn, $query);
+}
+
+function db_num_rows($result) {
+    global $db_type;
+    if ($db_type === 'pgsql') {
+        return pg_num_rows($result);
+    }
+    return mysqli_num_rows($result);
+}
+
+function db_fetch_assoc($result) {
+    global $db_type;
+    if ($db_type === 'pgsql') {
+        return pg_fetch_assoc($result);
+    }
+    return mysqli_fetch_assoc($result);
+}
+
+function db_fetch_array($result, $result_type = PGSQL_ASSOC) {
+    global $db_type;
+    if ($db_type === 'pgsql') {
+        return pg_fetch_array($result, null, $result_type);
+    }
+    return mysqli_fetch_array($result, $result_type);
+}
+
+function db_data_seek($result, $offset) {
+    global $db_type;
+    if ($db_type === 'pgsql') {
+        return pg_result_seek($result, $offset);
+    }
+    return mysqli_data_seek($result, $offset);
+}
+
+function db_error() {
+    global $conn, $db_type;
+    if ($db_type === 'pgsql') {
+        return pg_last_error($conn);
+    }
+    return mysqli_error($conn);
+}
+
 ?>

@@ -60,7 +60,7 @@ WHERE id='$id'
 
 /* EXECUTE */
 
-if(mysqli_query($conn, $query)){
+if(db_query( $query)){
 
     echo "
 
@@ -76,7 +76,7 @@ if(mysqli_query($conn, $query)){
 
 }else{
 
-    echo mysqli_error($conn);
+    echo db_error();
 
 }
 

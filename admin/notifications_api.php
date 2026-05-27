@@ -25,10 +25,10 @@ $action = $_GET['action'] ?? 'get_notifications';
 if ($action === 'get_notifications') {
 
     $query  = "SELECT * FROM notifications ORDER BY created_at DESC LIMIT 50";
-    $result = mysqli_query($conn, $query);
+    $result = db_query( $query);
 
     $notifications = [];
-    while ($row = mysqli_fetch_assoc($result)) {
+    while ($row = db_fetch_assoc($result)) {
         $notifications[] = $row;
     }
 
@@ -41,8 +41,8 @@ if ($action === 'get_notifications') {
 ───────────────────────────────────────── */
 if ($action === 'unread_count') {
 
-    $new_violations = mysqli_fetch_assoc(
-        mysqli_query($conn, "SELECT COUNT(*) c FROM notifications WHERE type='new_violation' AND created_at >= NOW() - INTERVAL 7 DAY")
+    $new_violations = db_fetch_assoc(
+        db_query( "SELECT COUNT(*) c FROM notifications WHERE type='new_violation' AND created_at >= NOW() - INTERVAL 7 DAY")
     )['c'];
 
     echo json_encode([

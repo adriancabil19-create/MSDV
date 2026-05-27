@@ -23,8 +23,7 @@ $adminPassword = "admin123";
 
 /* FORM DATA */
 $student_id =
-mysqli_real_escape_string(
-    $conn,
+db_escape(
     $_POST['student_id']
 );
 
@@ -51,15 +50,13 @@ if($password != $adminPassword){
 }
 
 /* DELETE VIOLATIONS FIRST */
-mysqli_query(
-    $conn,
+db_query(
     "DELETE FROM violations
      WHERE student_id='$student_id'"
 );
 
 /* DELETE STUDENT */
-mysqli_query(
-    $conn,
+db_query(
     "DELETE FROM students
      WHERE student_id='$student_id'"
 );

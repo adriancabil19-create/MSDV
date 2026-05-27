@@ -15,7 +15,7 @@ SELECT *,
 FROM violations
 ORDER BY id DESC
 ";
-$result = mysqli_query($conn, $query);
+$result = db_query( $query);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -344,7 +344,7 @@ html, body { height: 100%; font-family: var(--font); font-size: 14px; color: var
                             </tr>
                         </thead>
                         <tbody id="reportTable">
-                        <?php while($row = mysqli_fetch_assoc($result)) {
+                        <?php while($row = db_fetch_assoc($result)) {
                             $cat    = strtolower($row['violation_category']);
                             $status = strtolower($row['case_status']);
                             $count  = $row['tally'];

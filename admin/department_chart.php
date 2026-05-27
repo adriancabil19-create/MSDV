@@ -22,12 +22,12 @@ GROUP BY department
 
 ";
 
-$result = mysqli_query($conn, $query);
+$result = db_query( $query);
 
 $labels = [];
 $values = [];
 
-while($row = mysqli_fetch_assoc($result)){
+while($row = db_fetch_assoc($result)){
 
     $labels[] = $row['department'];
     $values[] = $row['total'];

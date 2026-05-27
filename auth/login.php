@@ -6,15 +6,15 @@ include("../config/database.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $username = mysqli_real_escape_string($conn, $_POST['username']);
+    $username = db_escape($_POST['username']);
     $password = $_POST['password'];
 
     $query = "SELECT * FROM users WHERE username='$username'";
-    $result = mysqli_query($conn, $query);
+    $result = db_query($query);
 
-    if (mysqli_num_rows($result) > 0) {
+    if ($result && db_num_rows($result) > 0) {
 
-        $user = mysqli_fetch_assoc($result);
+        $user = db_fetch_assoc($result);
 
         if (password_verify($password, $user['password'])) {
 

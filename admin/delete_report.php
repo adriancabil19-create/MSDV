@@ -21,8 +21,7 @@ if($_SESSION['role'] != 'admin'){
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
     $report_id =
-    mysqli_real_escape_string(
-        $conn,
+    db_escape(
         $_POST['report_id']
     );
 
@@ -42,10 +41,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     ";
 
     $result =
-    mysqli_query($conn, $query);
+    db_query( $query);
 
     $admin =
-    mysqli_fetch_assoc($result);
+    db_fetch_assoc($result);
 
     // VERIFY PASSWORD
     if(
@@ -64,7 +63,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
         ";
 
-        mysqli_query($conn, $delete);
+        db_query( $delete);
 
         echo "
 

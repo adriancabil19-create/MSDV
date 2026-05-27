@@ -23,7 +23,7 @@ $current_date = date("Y-m-d");
 /* ─────────────────────────────────────────
    FETCH VIOLATION TO COMPUTE SANCTION
 ───────────────────────────────────────── */
-$vrow = mysqli_fetch_assoc(mysqli_query($conn,
+$vrow = db_fetch_assoc(db_query(
     "SELECT *,
      (SELECT COUNT(*) FROM violations v2
       WHERE v2.student_id = violations.student_id
@@ -80,8 +80,8 @@ if ($category == 'minor') {
     else              $disciplinary_level = "Level 5 - Expulsion";
 }
 
-$sanction_safe           = mysqli_real_escape_string($conn, $sanction);
-$disciplinary_level_safe = mysqli_real_escape_string($conn, $disciplinary_level);
+$sanction_safe           = db_escape( $sanction);
+$disciplinary_level_safe = db_escape( $disciplinary_level);
 
 /* =========================
    IF STATUS = ONGOING
@@ -129,7 +129,7 @@ if ($case_status == "Ongoing") {
 }
 
 /* RUN QUERY */
-mysqli_query($conn, $query);
+db_query( $query);
 
 /* REDIRECT */
 header("Location: disciplinary_actions.php");

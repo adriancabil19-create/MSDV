@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     ";
 
-    mysqli_query($conn, $query);
+    db_query( $query);
 
     header("Location: reports.php");
     exit();

@@ -25,13 +25,13 @@ GROUP BY MONTH(created_at)
 
 ";
 
-$result = mysqli_query($conn, $query);
+$result = db_query( $query);
 
 $months = [];
 $minor = [];
 $major = [];
 
-while($row = mysqli_fetch_assoc($result)){
+while($row = db_fetch_assoc($result)){
 
     $months[] = $row['month'];
     $minor[] = $row['minor_total'];

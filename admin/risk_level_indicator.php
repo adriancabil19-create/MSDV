@@ -37,7 +37,7 @@ FROM students
 ORDER BY fullname ASC
 ";
 
-$studentsResult = mysqli_query($conn, $studentsQuery);
+$studentsResult = db_query( $studentsQuery);
 
 ?>
 
@@ -154,9 +154,9 @@ $studentsResult = mysqli_query($conn, $studentsQuery);
 |--------------------------------------------------------------------------
 */
 
-$studentsResult2 = mysqli_query($conn, $studentsQuery);
+$studentsResult2 = db_query( $studentsQuery);
 
-while($student = mysqli_fetch_assoc($studentsResult2)){
+while($student = db_fetch_assoc($studentsResult2)){
 
     $studentID = $student['student_id'];
 
@@ -173,8 +173,8 @@ while($student = mysqli_fetch_assoc($studentsResult2)){
     AND violation_category='Minor'
     ";
 
-    $minorResult = mysqli_query($conn, $minorQuery);
-    $minorData = mysqli_fetch_assoc($minorResult);
+    $minorResult = db_query( $minorQuery);
+    $minorData = db_fetch_assoc($minorResult);
 
     $minor = $minorData['total'];
 
@@ -191,8 +191,8 @@ while($student = mysqli_fetch_assoc($studentsResult2)){
     AND violation_category='Major'
     ";
 
-    $majorResult = mysqli_query($conn, $majorQuery);
-    $majorData = mysqli_fetch_assoc($majorResult);
+    $majorResult = db_query( $majorQuery);
+    $majorData = db_fetch_assoc($majorResult);
 
     $major = $majorData['total'];
 
@@ -357,7 +357,7 @@ while($student = mysqli_fetch_assoc($studentsResult2)){
 |--------------------------------------------------------------------------
 */
 
-while($student = mysqli_fetch_assoc($studentsResult)){
+while($student = db_fetch_assoc($studentsResult)){
 
     $studentID = $student['student_id'];
 
@@ -374,8 +374,8 @@ while($student = mysqli_fetch_assoc($studentsResult)){
     AND violation_category='Minor'
     ";
 
-    $minorResult = mysqli_query($conn, $minorQuery);
-    $minorData = mysqli_fetch_assoc($minorResult);
+    $minorResult = db_query( $minorQuery);
+    $minorData = db_fetch_assoc($minorResult);
 
     $minor = $minorData['total'];
 
@@ -392,8 +392,8 @@ while($student = mysqli_fetch_assoc($studentsResult)){
     AND violation_category='Major'
     ";
 
-    $majorResult = mysqli_query($conn, $majorQuery);
-    $majorData = mysqli_fetch_assoc($majorResult);
+    $majorResult = db_query( $majorQuery);
+    $majorData = db_fetch_assoc($majorResult);
 
     $major = $majorData['total'];
 

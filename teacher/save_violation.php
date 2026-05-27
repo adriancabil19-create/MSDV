@@ -11,14 +11,14 @@ include("../config/database.php");
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    $student_id         = mysqli_real_escape_string($conn, $_POST['student_id']);
-    $student_name       = mysqli_real_escape_string($conn, $_POST['student_name']);
-    $course             = mysqli_real_escape_string($conn, $_POST['course']);
-    $year_level         = mysqli_real_escape_string($conn, $_POST['year_level']);
-    $department         = mysqli_real_escape_string($conn, $_POST['department']);
-    $violation_category = mysqli_real_escape_string($conn, $_POST['violation_category']);
-    $violation_type     = mysqli_real_escape_string($conn, $_POST['violation_type']);
-    $description        = mysqli_real_escape_string($conn, $_POST['description']);
+    $student_id         = db_escape( $_POST['student_id']);
+    $student_name       = db_escape( $_POST['student_name']);
+    $course             = db_escape( $_POST['course']);
+    $year_level         = db_escape( $_POST['year_level']);
+    $department         = db_escape( $_POST['department']);
+    $violation_category = db_escape( $_POST['violation_category']);
+    $violation_type     = db_escape( $_POST['violation_type']);
+    $description        = db_escape( $_POST['description']);
     $camera_capture     = $_POST['camera_capture'];
     $e_signature        = $_POST['e_signature'];
     $reported_by        = $_SESSION['fullname'];
@@ -45,19 +45,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         '$reported_by', '$reporter_role'
     )";
 
-    $result = mysqli_query($conn, $query);
+    $result = db_query( $query);
 
     if ($result) {
 
         /* ── INSERT NEW VIOLATION NOTIFICATION ── */
-        $notif_title   = mysqli_real_escape_string($conn, "New Violation: $student_name");
-        $notif_message = mysqli_real_escape_string($conn,
+        $notif_title   = db_escape( "New Violation: $student_name");
+        $notif_message = db_escape(
             "$reported_by ($reporter_role) submitted a $violation_category violation " .
             "($violation_type) for $student_name (ID: $student_id)."
         );
-        $sid_esc = mysqli_real_escape_string($conn, $student_id);
+        $sid_esc = db_escape( $student_id);
 
-        mysqli_query($conn, "
+        db_query( "
             INSERT INTO notifications (type, title, message, student_id)
             VALUES ('new_violation', '$notif_title', '$notif_message', '$sid_esc')
         ");
@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         ";
 
     } else {
-        echo mysqli_error($conn);
+        echo db_error();
     }
 }
 ?>

@@ -7,44 +7,36 @@ include("../config/database.php");
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // STUDENT INFO
-    $student_id = mysqli_real_escape_string(
-        $conn,
+    $student_id = db_escape(
         $_POST['student_id']
     );
 
-    $student_name = mysqli_real_escape_string(
-        $conn,
+    $student_name = db_escape(
         $_POST['student_name']
     );
 
-    $course = mysqli_real_escape_string(
-        $conn,
+    $course = db_escape(
         $_POST['course']
     );
 
-    $year_level = mysqli_real_escape_string(
-        $conn,
+    $year_level = db_escape(
         $_POST['year_level']
     );
 
-    $department = mysqli_real_escape_string(
-        $conn,
+    $department = db_escape(
         $_POST['department']
     );
 
     // VIOLATION
-    $violation_category = mysqli_real_escape_string(
-        $conn,
+    $violation_category = db_escape(
         $_POST['violation_category']
     );
 
-    $violation_type = mysqli_real_escape_string(
-        $conn,
+    $violation_type = db_escape(
         $_POST['violation_type']
     );
 
-    $description = mysqli_real_escape_string(
-        $conn,
+    $description = db_escape(
         $_POST['description']
     );
 
@@ -129,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     ";
 
-    $result = mysqli_query($conn, $query);
+    $result = db_query( $query);
 
     if($result){
 
@@ -147,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     } else {
 
-        echo mysqli_error($conn);
+        echo db_error();
 
     }
 

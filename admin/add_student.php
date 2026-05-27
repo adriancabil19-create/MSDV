@@ -4,11 +4,11 @@ include("../config/database.php");
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    $student_id = mysqli_real_escape_string($conn, $_POST['student_id']);
-    $fullname = mysqli_real_escape_string($conn, $_POST['fullname']);
-    $course = mysqli_real_escape_string($conn, $_POST['course']);
-    $year_level = mysqli_real_escape_string($conn, $_POST['year_level']);
-    $department = mysqli_real_escape_string($conn, $_POST['department']);
+    $student_id = db_escape( $_POST['student_id']);
+    $fullname = db_escape( $_POST['fullname']);
+    $course = db_escape( $_POST['course']);
+    $year_level = db_escape( $_POST['year_level']);
+    $department = db_escape( $_POST['department']);
 
     $query = "INSERT INTO students
             (student_id, fullname, course, year_level, department)
@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             ('$student_id','$fullname','$course','$year_level','$department')";
 
-    mysqli_query($conn, $query);
+    db_query( $query);
 
     header("Location: students.php");
     exit();

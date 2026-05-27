@@ -68,13 +68,13 @@ if (isset($_GET['export'])) {
    EXPORT HTML FUNCTIONS
 ───────────────────────────────────────── */
 function exportStudentsHTML($conn) {
-    $q = mysqli_query($conn, "SELECT * FROM students ORDER BY id ASC");
+    $q = db_query( "SELECT * FROM students ORDER BY id ASC");
     echo '<h2 style="color:#1e3a5f;">🎓 Student Records &nbsp;<small style="font-size:10pt;color:#888;">Generated: ' . date('F d, Y h:i A') . '</small></h2>';
     echo '<table><thead><tr>
         <th>#</th><th>Student ID</th><th>Full Name</th><th>Course</th><th>Year Level</th><th>Department</th>
     </tr></thead><tbody>';
     $i = 1;
-    while ($r = mysqli_fetch_assoc($q)) {
+    while ($r = db_fetch_assoc($q)) {
         echo '<tr>
             <td>'.$i++.'</td>
             <td>'.htmlspecialchars($r['student_id']).'</td>
@@ -88,7 +88,7 @@ function exportStudentsHTML($conn) {
 }
 
 function exportViolationsHTML($conn) {
-    $q = mysqli_query($conn, "SELECT *,
+    $q = db_query( "SELECT *,
         (SELECT COUNT(*) FROM violations v2
          WHERE v2.student_id=violations.student_id
          AND v2.violation_category=violations.violation_category
@@ -104,7 +104,7 @@ function exportViolationsHTML($conn) {
         <th>Disciplinary Level</th><th>Disciplinary Start</th><th>Disciplinary End</th>
     </tr></thead><tbody>';
     $i = 1;
-    while ($r = mysqli_fetch_assoc($q)) {
+    while ($r = db_fetch_assoc($q)) {
         $san = computeSanction($r['offense_count'], $r['violation_category'], $r['violation_type']);
         $cs  = strtolower($r['case_status'] ?? '');
         $cls = $cs == 'pending' ? 'pending' : ($cs == 'completed' ? 'completed' : 'ongoing');
@@ -138,7 +138,7 @@ function exportViolationsHTML($conn) {
 }
 
 function exportDisciplinaryHTML($conn) {
-    $q = mysqli_query($conn, "SELECT *,
+    $q = db_query( "SELECT *,
         (SELECT COUNT(*) FROM violations v2
          WHERE v2.student_id=violations.student_id
          AND v2.violation_category=violations.violation_category
@@ -151,7 +151,7 @@ function exportDisciplinaryHTML($conn) {
         <th>Disciplinary Start</th><th>Disciplinary End</th>
     </tr></thead><tbody>';
     $i = 1;
-    while ($r = mysqli_fetch_assoc($q)) {
+    while ($r = db_fetch_assoc($q)) {
         $san = computeSanction($r['offense_count'], $r['violation_category'], $r['violation_type']);
         $cs  = strtolower($r['case_status'] ?? '');
         $cls = $cs == 'pending' ? 'pending' : ($cs == 'completed' ? 'completed' : 'ongoing');
@@ -172,7 +172,7 @@ function exportDisciplinaryHTML($conn) {
 }
 
 function exportRiskHTML($conn) {
-    $q = mysqli_query($conn, "SELECT student_id, student_name, course, department,
+    $q = db_query( "SELECT student_id, student_name, course, department,
         COUNT(*) as total_violations,
         SUM(CASE WHEN violation_category='Major' THEN 1 ELSE 0 END) as major_count,
         SUM(CASE WHEN violation_category='Minor' THEN 1 ELSE 0 END) as minor_count,
@@ -185,7 +185,7 @@ function exportRiskHTML($conn) {
         <th>Total Violations</th><th>Major</th><th>Minor</th><th>Pending</th><th>Risk Level</th>
     </tr></thead><tbody>';
     $i = 1;
-    while ($r = mysqli_fetch_assoc($q)) {
+    while ($r = db_fetch_assoc($q)) {
         $total = $r['total_violations'];
         $major = $r['major_count'];
         if ($major >= 2 || $total >= 5)       { $risk = 'HIGH';   $rc = '#dc2626'; }
@@ -231,18 +231,18 @@ function computeSanction($oc, $category, $violation) {
 /* ─────────────────────────────────────────
    FETCH COUNTS
 ───────────────────────────────────────── */
-$total_students    = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) c FROM students"))['c'];
-$total_violations  = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) c FROM violations"))['c'];
-$total_pending     = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) c FROM violations WHERE case_status='Pending'"))['c'];
-$total_completed   = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) c FROM violations WHERE case_status='Completed'"))['c'];
-$total_ongoing     = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) c FROM violations WHERE case_status='Ongoing'"))['c'];
-$total_risk_high   = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) c FROM (SELECT student_id, COUNT(*) t, SUM(violation_category='Major') m FROM violations GROUP BY student_id HAVING m>=2 OR t>=5) x"))['c'];
+$total_students    = db_fetch_assoc(db_query( "SELECT COUNT(*) c FROM students"))['c'];
+$total_violations  = db_fetch_assoc(db_query( "SELECT COUNT(*) c FROM violations"))['c'];
+$total_pending     = db_fetch_assoc(db_query( "SELECT COUNT(*) c FROM violations WHERE case_status='Pending'"))['c'];
+$total_completed   = db_fetch_assoc(db_query( "SELECT COUNT(*) c FROM violations WHERE case_status='Completed'"))['c'];
+$total_ongoing     = db_fetch_assoc(db_query( "SELECT COUNT(*) c FROM violations WHERE case_status='Ongoing'"))['c'];
+$total_risk_high   = db_fetch_assoc(db_query( "SELECT COUNT(*) c FROM (SELECT student_id, COUNT(*) t, SUM(violation_category='Major') m FROM violations GROUP BY student_id HAVING m>=2 OR t>=5) x"))['c'];
 
 // Preview data (5 rows each)
-$prev_students    = mysqli_query($conn, "SELECT * FROM students ORDER BY id DESC LIMIT 5");
-$prev_violations  = mysqli_query($conn, "SELECT * FROM violations ORDER BY created_at DESC LIMIT 5");
-$prev_disciplinary= mysqli_query($conn, "SELECT * FROM violations WHERE case_status IS NOT NULL ORDER BY created_at DESC LIMIT 5");
-$prev_risk        = mysqli_query($conn, "SELECT student_id, student_name, course, COUNT(*) total, SUM(violation_category='Major') major FROM violations GROUP BY student_id ORDER BY total DESC LIMIT 5");
+$prev_students    = db_query( "SELECT * FROM students ORDER BY id DESC LIMIT 5");
+$prev_violations  = db_query( "SELECT * FROM violations ORDER BY created_at DESC LIMIT 5");
+$prev_disciplinary= db_query( "SELECT * FROM violations WHERE case_status IS NOT NULL ORDER BY created_at DESC LIMIT 5");
+$prev_risk        = db_query( "SELECT student_id, student_name, course, COUNT(*) total, SUM(violation_category='Major') major FROM violations GROUP BY student_id ORDER BY total DESC LIMIT 5");
 
 // Export history
 $export_history = file_exists($history_file) ? json_decode(file_get_contents($history_file), true) : [];
@@ -377,7 +377,7 @@ $export_history = file_exists($history_file) ? json_decode(file_get_contents($hi
                             </tr>
                         </thead>
                         <tbody>
-                        <?php while($r = mysqli_fetch_assoc($prev_students)): ?>
+                        <?php while($r = db_fetch_assoc($prev_students)): ?>
                             <tr>
                                 <td><?= htmlspecialchars($r['student_id']) ?></td>
                                 <td><?= htmlspecialchars($r['fullname']) ?></td>
@@ -414,7 +414,7 @@ $export_history = file_exists($history_file) ? json_decode(file_get_contents($hi
                             </tr>
                         </thead>
                         <tbody>
-                        <?php while($r = mysqli_fetch_assoc($prev_violations)):
+                        <?php while($r = db_fetch_assoc($prev_violations)):
                             $cs = strtolower($r['case_status'] ?? '');
                             $cls = $cs == 'pending' ? 'warning' : ($cs == 'completed' ? 'success' : 'info');
                         ?>
@@ -457,15 +457,15 @@ $export_history = file_exists($history_file) ? json_decode(file_get_contents($hi
                         </thead>
                         <tbody>
                         <?php
-                        mysqli_data_seek($prev_disciplinary, 0);
+                        db_data_seek($prev_disciplinary, 0);
                         // re-query with offense count for sanction
-                        $dq = mysqli_query($conn, "SELECT *,
+                        $dq = db_query( "SELECT *,
                             (SELECT COUNT(*) FROM violations v2
                              WHERE v2.student_id=violations.student_id
                              AND v2.violation_category=violations.violation_category
                              AND v2.id<=violations.id) AS offense_count
                             FROM violations ORDER BY created_at DESC LIMIT 5");
-                        while($r = mysqli_fetch_assoc($dq)):
+                        while($r = db_fetch_assoc($dq)):
                             $san = computeSanction($r['offense_count'], $r['violation_category'], $r['violation_type']);
                             $cs  = strtolower($r['case_status'] ?? '');
                             $cls = $cs == 'pending' ? 'warning' : ($cs == 'completed' ? 'success' : 'info');
@@ -509,7 +509,7 @@ $export_history = file_exists($history_file) ? json_decode(file_get_contents($hi
                             </tr>
                         </thead>
                         <tbody>
-                        <?php while($r = mysqli_fetch_assoc($prev_risk)):
+                        <?php while($r = db_fetch_assoc($prev_risk)):
                             $major = $r['major'];
                             $total = $r['total'];
                             if ($major >= 2 || $total >= 5)     { $risk = 'HIGH';   $rc = 'risk-high'; }
