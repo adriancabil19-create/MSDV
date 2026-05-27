@@ -38,10 +38,18 @@ elseif ($db_type === 'pgsql') {
     $conn = @pg_connect($connection_string);
 
     if (!$conn) {
-        $error = pg_last_error();
+        // Avoid calling pg_last_error() without an explicit connection (deprecated).
+        $error = '';
+        $last = error_get_last();
+        if (!empty($last['message'])) {
+            $error = $last['message'];
+        } else {
+            $error = 'Unknown error';
+        }
+
         // Mask password for output
         $display_conn = preg_replace('/password=[^\s]+/', 'password=****', $connection_string);
-        die("PostgreSQL Connection Failed: " . ($error ?: 'Unknown error') . " — " . $display_conn);
+        die("PostgreSQL Connection Failed: " . $error . " — " . $display_conn);
     }
 }
 else {
