@@ -24,14 +24,24 @@ if ($db_type === 'mysql') {
 }
 // PostgreSQL Connection
 elseif ($db_type === 'pgsql') {
+    // Resolve an IPv4 address for the host to avoid IPv6 "Network is unreachable" errors
+    $resolved_ip = gethostbyname($host);
+
     $connection_string = "host=$host port=$port dbname=$db_name user=$user password=$pass";
+    if ($resolved_ip !== $host && filter_var($resolved_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+        $connection_string .= " hostaddr=$resolved_ip";
+    }
     if (!empty($sslmode)) {
         $connection_string .= " sslmode=$sslmode";
     }
-    $conn = pg_connect($connection_string);
-    
+
+    $conn = @pg_connect($connection_string);
+
     if (!$conn) {
-        die("PostgreSQL Connection Failed");
+        $error = pg_last_error();
+        // Mask password for output
+        $display_conn = preg_replace('/password=[^\s]+/', 'password=****', $connection_string);
+        die("PostgreSQL Connection Failed: " . ($error ?: 'Unknown error') . " — " . $display_conn);
     }
 }
 else {
