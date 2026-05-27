@@ -5,25 +5,31 @@
 ### Prerequisites
 - Docker and Docker Compose installed
 
-### Running Locally
+### Initial Setup
 
-1. **Start the application:**
+1. **Copy environment file:**
+   ```bash
+   cp .env.example .env
+   ```
+   The `.env` file is already configured for local Docker development.
+
+2. **Start the application:**
    ```bash
    docker-compose up -d
    ```
    This will start both the PHP/Apache web server and PostgreSQL database.
 
-2. **Access the application:**
+3. **Access the application:**
    - URL: `http://localhost`
    - Login page: `http://localhost/auth/login.php`
    - Default credentials: admin / (check users table)
 
-3. **Stop the application:**
+4. **Stop the application:**
    ```bash
    docker-compose down
    ```
 
-4. **View logs:**
+5. **View logs:**
    ```bash
    docker-compose logs -f web
    docker-compose logs -f postgres
@@ -33,7 +39,7 @@
 
 **Database Type:** PostgreSQL (converted from MySQL)
 
-Environment variables:
+Environment variables (stored in `.env`):
 ```bash
 DB_TYPE=pgsql
 DB_HOST=postgres
@@ -41,15 +47,40 @@ DB_PORT=5432
 DB_USER=msdv_user
 DB_PASS=msdv_password
 DB_NAME=mcc_discipline_system
+APP_ENV=local
+APP_URL=http://localhost
 ```
 
-## Deployment on Railway
+## Deployment on Railway + Supabase
 
 ### Prerequisites
 - Railway account (railway.app)
+- Supabase account (supabase.com)
 - GitHub account with repository
 
-### Deployment Steps
+### Step 1: Set Up Supabase Database
+
+1. **Create Supabase Project:**
+   - Go to https://supabase.com and sign up/login
+   - Click "New Project"
+   - Select your region and set a password
+   - Wait for provisioning (5-10 minutes)
+
+2. **Get Connection Details:**
+   - Go to Project Settings → Database
+   - Copy the connection string or note:
+     - Host: `[project-id].supabase.co`
+     - Port: `5432`
+     - Username: `postgres`
+     - Password: (the one you set)
+     - Database: `postgres`
+
+3. **Import Database Schema:**
+   - In Supabase, go to SQL Editor
+   - Create a new query and paste contents of `/db/mcc_discipline_system.sql`
+   - Execute the query to create all tables
+
+### Step 2: Deploy on Railway
 
 1. **Go to Railway Dashboard:**
    - Visit https://railway.app
@@ -60,38 +91,37 @@ DB_NAME=mcc_discipline_system
    - Select the MSDV_reporting_system repository
    - Railway will automatically detect the Dockerfile
 
-3. **Add PostgreSQL Service:**
-   - In Railway dashboard, click "Add Service"
-   - Select "Database" → "PostgreSQL"
-   - Configure latest version
-
-4. **Set Environment Variables:**
+3. **Set Environment Variables:**
    - In Railway dashboard, go to Variables
-   - Add the following:
+   - Add the following (from Supabase connection details):
      ```
      DB_TYPE=pgsql
-     DB_HOST=postgres.railway.internal
+     DB_HOST=your-project.supabase.co
      DB_PORT=5432
-     DB_USER=msdv_user
-     DB_PASS=your-secure-password
-     DB_NAME=mcc_discipline_system
+     DB_USER=postgres
+     DB_PASS=your-supabase-password
+     DB_NAME=postgres
+     APP_ENV=production
+     APP_URL=https://your-railway-url.railway.app
+     APP_DEBUG=false
      ```
 
-5. **Initialize Database:**
-   - SSH into the container or use Railway's console
-   - Import the SQL schema: `/db/mcc_discipline_system.sql`
-
-6. **Deploy:**
+4. **Deploy:**
    - Railway will automatically build and deploy
    - Your app will be available at the Railway-provided URL
 
-## Deployment on Render
+## Deployment on Render + Supabase
 
 ### Prerequisites
 - Render account (render.com)
+- Supabase account (supabase.com)
 - GitHub account with repository
 
-### Deployment Steps
+### Step 1: Set Up Supabase Database (same as Railway)
+
+Follow the Supabase setup steps in the Railway section above.
+
+### Step 2: Deploy on Render
 
 1. **Create Web Service:**
    - Go to https://dashboard.render.com
@@ -101,29 +131,24 @@ DB_NAME=mcc_discipline_system
 2. **Configure:**
    - Build Command: (leave empty, uses Dockerfile)
    - Start Command: `apache2-foreground`
-   - Instance Type: Free tier
+   - Instance Type: Starter tier or higher
 
-3. **Add PostgreSQL Database:**
-   - Create a new PostgreSQL database in Render
-   - Note the connection details
-
-4. **Set Environment Variables:**
+3. **Set Environment Variables:**
    - In Service settings, add:
      ```
      DB_TYPE=pgsql
-     DB_HOST=your-postgres-host
+     DB_HOST=your-project.supabase.co
      DB_PORT=5432
-     DB_USER=msdv_user
-     DB_PASS=your-secure-password
-     DB_NAME=mcc_discipline_system
+     DB_USER=postgres
+     DB_PASS=your-supabase-password
+     DB_NAME=postgres
+     APP_ENV=production
+     APP_URL=https://your-render-url.onrender.com
+     APP_DEBUG=false
      ```
 
-5. **Initialize Database:**
-   - Use Render's PostgreSQL console or SQL editor
-   - Execute the SQL from `/db/mcc_discipline_system.sql`
-
-6. **Deploy:**
-   - Render will automatically build and deploy
+4. **Deploy:**
+   - Render will automatically build and deploy from GitHub
 
 ## Database Schema Notes
 
